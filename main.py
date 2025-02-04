@@ -365,6 +365,14 @@ class ASCIIArtStudio:
                                   selectcolor='#2C3E50')
         bold_check.pack(pady=2)
         
+        # Dönüştür butonu
+        convert_button = tk.Button(settings_frame, text="Dönüştür",
+                                 command=self.convert_current_image,
+                                 bg='#3498DB', fg='white',
+                                 activebackground='#2980B9',
+                                 width=20)
+        convert_button.pack(pady=10)
+        
         # Yazı boyutu ayarı
         size_label = tk.Label(settings_frame, text="Yazı Boyutu",
                             bg='#34495E', fg='white')
@@ -612,6 +620,41 @@ class ASCIIArtStudio:
             ascii_art.append(line)
 
         return ascii_art
+
+    def convert_current_image(self):
+        # Mevcut dosya yolunu al
+        current_file = self.file_path_var.get()
+        if not current_file:
+            return
+        
+        # Ayarları al
+        try:
+            width = int(self.width_var.get())
+        except ValueError:
+            width = 300  # Varsayılan değer
+        
+        # Font boyutunu al
+        font_size = int(self.size_scale.get())
+        
+        # ASCII set tipini al
+        ascii_set = self.ascii_set_var.get()
+        if ascii_set == "Detaylı":
+            self.ASCII_CHARS = ['@', '#', 'S', '%', '?', '*', '+', ';', ':', ',', '.']
+        else:
+            self.ASCII_CHARS = ['@', '#', '$', '*', '!', '=', '-', '.']
+        
+        # Renk tersine çevirme kontrolü
+        if self.reverse_colors_var.get():
+            self.ASCII_CHARS = self.ASCII_CHARS[::-1]
+        
+        # Font kalınlığı kontrolü
+        font_weight = "bold" if self.bold_text_var.get() else "normal"
+        
+        # Text widget font ayarlarını güncelle
+        self.ascii_text.configure(font=("Courier", font_size, font_weight))
+        
+        # Dosyayı yeniden işle
+        self.process_file(current_file)
 
 if __name__ == "__main__":
     root = tk.Tk()
